@@ -1,9 +1,20 @@
 ---
 description: Deep system reconnaissance, OSINT, network enumeration, and attack surface mapping
 mode: subagent
+temperature: 0.2
+maxSteps: 50
 tools:
   write: false
   edit: false
+  bash: true
+  read: true
+  glob: true
+  grep: true
+  list: true
+  webfetch: true
+permission:
+  bash: allow
+  edit: deny
 ---
 
 # Reconnaissance Agent

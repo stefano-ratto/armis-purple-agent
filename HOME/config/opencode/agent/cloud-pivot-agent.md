@@ -1,9 +1,21 @@
 ---
 description: Cloud backend access attempts, AWS/Azure/GCP exploitation, and collector-to-backend pivot testing
 mode: subagent
+temperature: 0.3
+maxSteps: 50
 tools:
   write: false
   edit: false
+  bash: true
+  read: true
+  glob: true
+  grep: true
+  list: true
+  webfetch: true
+permission:
+  bash: allow
+  webfetch: allow
+  edit: deny
 ---
 
 # Cloud Pivot Agent

@@ -1,9 +1,21 @@
 ---
 description: Security tools management, deployment guidance, and tool configuration support
 mode: subagent
+temperature: 0.2
+maxSteps: 40
 tools:
   write: false
   edit: false
+  bash: true
+  read: true
+  glob: true
+  grep: true
+  list: true
+  webfetch: true
+permission:
+  bash: allow
+  webfetch: allow
+  edit: deny
 ---
 
 # Tools Arsenal Agent

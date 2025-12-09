@@ -1,9 +1,21 @@
 ---
 description: Social engineering assessment, phishing simulation, and human-factor security testing
 mode: subagent
+temperature: 0.4
+maxSteps: 30
 tools:
-  write: false
+  write: true
   edit: false
+  bash: true
+  read: true
+  glob: true
+  grep: true
+  list: true
+  webfetch: true
+permission:
+  bash: allow
+  webfetch: allow
+  edit: deny
 ---
 
 # Social Engineering Agent

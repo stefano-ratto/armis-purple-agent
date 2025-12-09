@@ -133,8 +133,9 @@ armis-purple-primary
 
 ### Invoking a Sub-Agent
 
-To invoke a sub-agent from the primary Armis Purple agent:
+There are two methods to invoke sub-agents:
 
+**Method 1: @ Mention (Direct)**
 ```
 @recon-agent Perform comprehensive reconnaissance on the target collector system
 ```
@@ -147,12 +148,45 @@ To invoke a sub-agent from the primary Armis Purple agent:
 @compliance-agent Run CIS Debian 11 Benchmark assessment on the collector
 ```
 
+**Method 2: Task Tool (Programmatic)**
+```python
+Task(
+    description="Reconnaissance scan",
+    prompt="Perform comprehensive reconnaissance on the target collector system",
+    subagent_type="recon-agent"
+)
+```
+
+### Parallel Execution for Maximum Performance
+
+Launch multiple independent agents simultaneously:
+```python
+# Phase 1 parallel execution
+Task(description="Recon", prompt="...", subagent_type="recon-agent")
+Task(description="Vuln scan", prompt="...", subagent_type="vuln-analysis-agent")
+Task(description="Container tests", prompt="...", subagent_type="container-security-agent")
+Task(description="Auth testing", prompt="...", subagent_type="auth-bypass-agent")
+Task(description="Dataflow mapping", prompt="...", subagent_type="dataflow-mapping-agent")
+Task(description="Cert analysis", prompt="...", subagent_type="certificate-agent")
+Task(description="Compliance", prompt="...", subagent_type="compliance-agent")
+```
+
 ### Agent Communication
 
 Sub-agents communicate findings through structured output that feeds into:
 1. Other dependent agents for continued assessment
 2. Evidence collection agent for documentation
 3. Report generation agent for final deliverables
+
+## Agent Configuration
+
+Each sub-agent is configured with:
+- **temperature**: Controls response creativity (0.1-0.4 for security tasks)
+- **maxSteps**: Maximum agentic iterations before forced response
+- **tools**: Specific tool access (bash, read, write, etc.)
+- **permission**: Permission levels for sensitive operations
+
+See `opencode.jsonc` for full configuration details.
 
 ## File Locations
 

@@ -1,9 +1,19 @@
 ---
 description: Certificate analysis, TLS/SSL testing, cryptographic review, and key management assessment (TC-010)
 mode: subagent
+temperature: 0.2
+maxSteps: 30
 tools:
   write: false
   edit: false
+  bash: true
+  read: true
+  glob: true
+  grep: true
+  list: true
+permission:
+  bash: allow
+  edit: deny
 ---
 
 # Certificate Analysis Agent
