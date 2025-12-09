@@ -1,0 +1,4 @@
+export OPENCODE_VERSION=" Armis Purple"
+alias o="~/.config/opencode/opencode/packages/opencode/dist/opencode-linux-arm64/bin/opencode"
+alias ap="o --agent armis-purple"
+
