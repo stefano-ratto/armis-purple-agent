@@ -8,11 +8,14 @@
     }
   },
   "agent": {
+    // ============================================================
+    // PRIMARY AGENT: Armis Purple - Elite Orchestration Agent
+    // ============================================================
     "armis-purple": {
       "description": "Armis Purple - Elite Offensive Security Orchestration Agent for FedRAMP Red Team Exercise",
       "mode": "primary",
       "prompt": "{file:./armis-purple.md}",
-      "temperature": 0.5,
+      "temperature": 0.3,
       "tools": {
         "*": true
       },
@@ -20,6 +23,369 @@
         "edit": "allow",
         "bash": "allow",
         "webfetch": "allow"
+      }
+    },
+
+    // ============================================================
+    // PHASE 1 SUB-AGENTS: Reconnaissance & Analysis
+    // ============================================================
+    "recon-agent": {
+      "description": "Deep system reconnaissance, OSINT, network enumeration, and attack surface mapping",
+      "mode": "subagent",
+      "prompt": "{file:./agent/recon-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "vuln-analysis-agent": {
+      "description": "Vulnerability scanning, CVE analysis, misconfiguration detection, and security weakness identification",
+      "mode": "subagent",
+      "prompt": "{file:./agent/vuln-analysis-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "container-security-agent": {
+      "description": "Container escape testing, Docker/containerd security, namespace isolation, and image security (TC-001 to TC-007)",
+      "mode": "subagent",
+      "prompt": "{file:./agent/container-security-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "auth-bypass-agent": {
+      "description": "Authentication testing, credential attacks, account mapping, and access control bypass (TC-008, TC-009)",
+      "mode": "subagent",
+      "prompt": "{file:./agent/auth-bypass-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "dataflow-mapping-agent": {
+      "description": "Network traffic analysis, dataflow mapping, protocol analysis, and communication path documentation",
+      "mode": "subagent",
+      "prompt": "{file:./agent/dataflow-mapping-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "certificate-agent": {
+      "description": "Certificate analysis, TLS/SSL testing, cryptographic review, and key management assessment (TC-010)",
+      "mode": "subagent",
+      "prompt": "{file:./agent/certificate-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 30,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "compliance-agent": {
+      "description": "CIS benchmark assessment, NIAP compliance verification, and security standards auditing",
+      "mode": "subagent",
+      "prompt": "{file:./agent/compliance-agent.md}",
+      "temperature": 0.1,
+      "maxSteps": 100,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow",
+        "edit": "deny"
+      }
+    },
+
+    // ============================================================
+    // PHASE 2 SUB-AGENTS: Exploitation & Movement
+    // ============================================================
+    "exploitation-agent": {
+      "description": "Exploit development, privilege escalation, proof-of-concept creation, and vulnerability weaponization",
+      "mode": "subagent",
+      "prompt": "{file:./agent/exploitation-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 50,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "cloud-pivot-agent": {
+      "description": "Cloud backend access attempts, AWS/Azure/GCP exploitation, and collector-to-backend pivot testing",
+      "mode": "subagent",
+      "prompt": "{file:./agent/cloud-pivot-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true
+      },
+      "permission": {
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+
+    "reverse-tunnel-agent": {
+      "description": "Reverse tunneling, covert channel establishment, C2 communication, and network security bypass",
+      "mode": "subagent",
+      "prompt": "{file:./agent/reverse-tunnel-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 40,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "lateral-movement-agent": {
+      "description": "Lateral movement testing, pivoting between systems, and internal network traversal",
+      "mode": "subagent",
+      "prompt": "{file:./agent/lateral-movement-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 50,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    "persistence-agent": {
+      "description": "Persistence mechanism analysis, backdoor detection, and access maintenance testing",
+      "mode": "subagent",
+      "prompt": "{file:./agent/persistence-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 40,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    // ============================================================
+    // PHASE 3 SUB-AGENTS: Data Exfiltration
+    // ============================================================
+    "data-exfiltration-agent": {
+      "description": "Data exfiltration testing, sensitive data identification, and data exposure risk demonstration",
+      "mode": "subagent",
+      "prompt": "{file:./agent/data-exfiltration-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 40,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow"
+      }
+    },
+
+    // ============================================================
+    // SUPPORT SUB-AGENTS: Tools, Evidence, Reporting
+    // ============================================================
+    "social-engineering-agent": {
+      "description": "Social engineering assessment, phishing simulation, and human-factor security testing",
+      "mode": "subagent",
+      "prompt": "{file:./agent/social-engineering-agent.md}",
+      "temperature": 0.4,
+      "maxSteps": 30,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true
+      },
+      "permission": {
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+
+    "evidence-collection-agent": {
+      "description": "Evidence collection, chain of custody documentation, and forensic artifact preservation",
+      "mode": "subagent",
+      "prompt": "{file:./agent/evidence-collection-agent.md}",
+      "temperature": 0.1,
+      "maxSteps": 50,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow",
+        "edit": "allow"
+      }
+    },
+
+    "tools-arsenal-agent": {
+      "description": "Security tools management, deployment guidance, and tool configuration support",
+      "mode": "subagent",
+      "prompt": "{file:./agent/tools-arsenal-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 40,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true
+      },
+      "permission": {
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+
+    "report-generation-agent": {
+      "description": "Report generation, finding documentation, executive summaries, and FedRAMP deliverables",
+      "mode": "subagent",
+      "prompt": "{file:./agent/report-generation-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 100,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true
+      },
+      "permission": {
+        "bash": "allow",
+        "edit": "allow"
       }
     }
   },
