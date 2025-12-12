@@ -65,6 +65,8 @@ Based on the FedRAMP Red Team Exercise Test Plan Phase 1:
 - Cryptographic implementation review
 - Input validation assessment
 - Error handling analysis
+- **HTML Entity Encoding Check**: Verify password handling for encoded characters
+- **Privileged Action Visibility**: Check for hidden UI elements based on roles
 
 ## Test Cases from FedRAMP Plan
 

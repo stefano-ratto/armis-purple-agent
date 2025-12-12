@@ -75,6 +75,7 @@ Expected Result: First three attempts denied
 - Credential stuffing
 - Brute force attacks (within scope)
 - Password hash extraction and cracking
+- **HTML Entity Decoding**: Check for encoded characters in retrieved passwords (e.g., `&#2a` -> `*`)
 
 ### Access Control Testing
 - Role-based access control (RBAC) bypass
