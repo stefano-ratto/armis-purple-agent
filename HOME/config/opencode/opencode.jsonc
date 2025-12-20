@@ -72,6 +72,29 @@
       }
     },
 
+    "webapp-vuln-agent": {
+      "description": "Web application vulnerability analysis - authentication, authorization, injection, XSS, SSRF white-box code auditing",
+      "mode": "subagent",
+      "prompt": "{file:./agent/webapp-vuln-agent.md}",
+      "temperature": 0.2,
+      "maxSteps": 75,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true,
+        "task": true
+      },
+      "permission": {
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+
     "container-security-agent": {
       "description": "Container escape testing, Docker/containerd security, namespace isolation, and image security (TC-001 to TC-007)",
       "mode": "subagent",
@@ -193,6 +216,29 @@
       },
       "permission": {
         "bash": "allow"
+      }
+    },
+
+    "webapp-exploit-agent": {
+      "description": "Web application exploitation - authentication bypass, authorization abuse, injection attacks, XSS weaponization, SSRF exploitation",
+      "mode": "subagent",
+      "prompt": "{file:./agent/webapp-exploit-agent.md}",
+      "temperature": 0.3,
+      "maxSteps": 75,
+      "tools": {
+        "write": true,
+        "edit": false,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "list": true,
+        "webfetch": true,
+        "task": true
+      },
+      "permission": {
+        "bash": "allow",
+        "webfetch": "allow"
       }
     },
 
