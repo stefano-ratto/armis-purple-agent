@@ -4031,5 +4031,1721 @@ STEP 4: Proceed with user request
 ================================================================================
 ```
 
+---
+
+## [ADVANCED ORCHESTRATION] SMART ROUTING ENGINE
+
+### INTELLIGENT AGENT ROUTING SYSTEM
+
+The Smart Routing Engine automatically analyzes user requests and routes them to the optimal sub-agent(s) based on keyword patterns, context analysis, and task dependencies.
+
+```
+================================================================================
+                    SMART ROUTING DECISION ENGINE
+================================================================================
+     STEP 1: Parse user request for keywords and patterns
+     STEP 2: Match against routing rules (priority-ordered)
+     STEP 3: Identify dependencies and parallel opportunities
+     STEP 4: Generate optimized delegation plan
+     STEP 5: Execute with appropriate prompt templates
+================================================================================
+```
+
+### ROUTING RULES (PRIORITY ORDER)
+
+#### TIER 1: HIGH-PRIORITY EXACT MATCHES (Process First)
+
+| Pattern/Keywords | Primary Agent | Secondary Agent | Confidence |
+|------------------|---------------|-----------------|------------|
+| `full assessment`, `complete pentest`, `comprehensive test` | MULTI-AGENT | Phase 1 Launch | 100% |
+| `fedramp`, `compliance assessment`, `security audit` | compliance-agent | + Phase 1 agents | 100% |
+| `emergency`, `critical vuln`, `active breach` | vuln-analysis-agent | exploitation-agent | 100% |
+| `incident response`, `forensics`, `breach investigation` | evidence-collection-agent | recon-agent | 100% |
+
+#### TIER 2: DOMAIN-SPECIFIC ROUTING
+
+**Reconnaissance Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| Network/Infrastructure Recon | recon-agent | `scan`, `enumerate`, `discover`, `fingerprint`, `osint`, `subdomain`, `dns`, `port scan`, `service detection`, `network map`, `asset discovery`, `footprint` |
+| Web Application Recon | recon-agent | `spider`, `crawl`, `endpoint discovery`, `api enumeration`, `parameter discovery`, `technology stack`, `cms detection` |
+
+**Vulnerability Analysis Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| General Vulnerability | vuln-analysis-agent | `vulnerability`, `vuln`, `cve`, `weakness`, `security flaw`, `misconfiguration`, `exposure`, `risk assessment` |
+| Web App Vulnerabilities | webapp-vuln-agent | `owasp`, `injection`, `xss`, `csrf`, `ssrf`, `idor`, `broken access`, `auth flaw`, `session`, `sqli`, `command injection`, `ssti`, `lfi`, `rfi`, `xxe`, `deserialization` |
+| Container Vulnerabilities | container-security-agent | `container`, `docker`, `kubernetes`, `k8s`, `pod`, `namespace`, `escape`, `breakout`, `privileged`, `capability` |
+
+**Authentication Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| Auth Testing | auth-bypass-agent | `authentication`, `login`, `credential`, `password`, `brute force`, `mfa`, `2fa`, `session`, `token`, `jwt`, `oauth`, `sso`, `saml`, `ldap auth` |
+
+**Exploitation Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| General Exploitation | exploitation-agent | `exploit`, `privilege escalation`, `privesc`, `root`, `admin`, `shell`, `rce`, `code execution`, `payload`, `reverse shell`, `bind shell` |
+| Web Exploitation | webapp-exploit-agent | `weaponize`, `poc`, `proof of concept`, `exploit sqli`, `exploit xss`, `exploit ssrf`, `chain`, `attack`, `bypass waf` |
+
+**Infrastructure Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| Network/Dataflow | dataflow-mapping-agent | `network traffic`, `dataflow`, `packet`, `protocol`, `communication`, `traffic analysis`, `network path`, `data flow` |
+| Cloud Security | cloud-pivot-agent | `cloud`, `aws`, `azure`, `gcp`, `s3`, `ec2`, `lambda`, `iam`, `metadata`, `imds`, `cloud pivot`, `cloud escape` |
+| Certificates/Crypto | certificate-agent | `certificate`, `tls`, `ssl`, `crypto`, `encryption`, `x509`, `pki`, `key`, `cipher`, `https` |
+
+**Post-Exploitation Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| Lateral Movement | lateral-movement-agent | `lateral`, `pivot`, `movement`, `spread`, `hop`, `internal`, `east-west`, `domain`, `ad`, `active directory` |
+| Persistence | persistence-agent | `persistence`, `backdoor`, `implant`, `maintain access`, `scheduled task`, `service`, `registry`, `startup` |
+| Tunneling | reverse-tunnel-agent | `tunnel`, `covert`, `c2`, `command and control`, `exfil channel`, `reverse`, `socks`, `proxy` |
+| Data Exfiltration | data-exfiltration-agent | `exfiltration`, `exfil`, `data theft`, `steal`, `extract data`, `sensitive data`, `pii`, `dump` |
+
+**Support Domain**
+| Pattern | Agent | Trigger Words |
+|---------|-------|---------------|
+| Compliance | compliance-agent | `compliance`, `cis`, `niap`, `nist`, `benchmark`, `hardening`, `baseline`, `audit`, `standard` |
+| Evidence | evidence-collection-agent | `evidence`, `proof`, `capture`, `screenshot`, `log`, `artifact`, `document`, `chain of custody` |
+| Reporting | report-generation-agent | `report`, `summary`, `executive`, `findings`, `deliverable`, `documentation`, `write up` |
+| Tools | tools-arsenal-agent | `tool`, `install`, `deploy`, `setup`, `configure`, `arsenal`, `toolkit` |
+| Social Engineering | social-engineering-agent | `phishing`, `social engineering`, `pretexting`, `vishing`, `smishing`, `human factor` |
+
+### SMART ROUTING ALGORITHM
+
+```python
+# Pseudo-code for Smart Routing Decision Engine
+
+def route_request(user_request: str) -> List[AgentTask]:
+    """
+    Analyze user request and generate optimal agent delegation plan.
+    """
+    request_lower = user_request.lower()
+    matched_agents = []
+    
+    # STEP 1: Check for Tier 1 high-priority patterns
+    if any(p in request_lower for p in ['full assessment', 'complete pentest', 'comprehensive']):
+        return generate_full_assessment_plan()
+    
+    if any(p in request_lower for p in ['fedramp', 'compliance assessment']):
+        return generate_compliance_assessment_plan()
+    
+    # STEP 2: Score each agent based on keyword matches
+    agent_scores = {}
+    for agent, keywords in ROUTING_RULES.items():
+        score = sum(1 for kw in keywords if kw in request_lower)
+        if score > 0:
+            agent_scores[agent] = score
+    
+    # STEP 3: Select agents with scores above threshold
+    threshold = 1
+    selected_agents = [a for a, s in agent_scores.items() if s >= threshold]
+    
+    # STEP 4: Apply dependency rules
+    if 'exploitation-agent' in selected_agents and 'vuln-analysis-agent' not in selected_agents:
+        # Exploitation requires vulnerability context
+        selected_agents.insert(0, 'vuln-analysis-agent')
+    
+    if 'webapp-exploit-agent' in selected_agents and 'webapp-vuln-agent' not in selected_agents:
+        # Web exploitation requires web vuln analysis
+        selected_agents.insert(0, 'webapp-vuln-agent')
+    
+    # STEP 5: Identify parallel vs sequential execution
+    parallel_groups = identify_parallel_groups(selected_agents)
+    
+    # STEP 6: Generate task plan with appropriate prompts
+    return generate_task_plan(selected_agents, parallel_groups, user_request)
+```
+
+### CONTEXT-AWARE ROUTING ENHANCEMENTS
+
+The router also considers:
+
+1. **Previous Findings**: If AGENTS.md contains vulnerability findings, route to exploitation agents
+2. **Current Phase**: Route based on assessment phase (recon → vuln → exploit → post-exploit)
+3. **Target Type**: Web app targets route to webapp-* agents; infrastructure to network agents
+4. **Scope Constraints**: Respect scope boundaries when selecting agents
+
+---
+
+## [ADVANCED ORCHESTRATION] PROMPT TEMPLATES LIBRARY
+
+### PRE-BUILT OPTIMIZED PROMPTS FOR EACH SUB-AGENT
+
+These templates ensure consistent, high-quality prompts that maximize sub-agent effectiveness.
+
+### RECON-AGENT PROMPT TEMPLATES
+
+#### Template: RECON-FULL
+```
+TASK: Comprehensive Reconnaissance
+TARGET: {target}
+SCOPE: {scope_boundaries}
+
+OBJECTIVES:
+1. Perform passive reconnaissance (OSINT, DNS, certificate transparency)
+2. Enumerate subdomains and virtual hosts
+3. Identify all exposed services and ports
+4. Fingerprint technologies and versions
+5. Map the attack surface
+
+REQUIRED OUTPUT:
+- Subdomain list with resolution status
+- Open ports and services per host
+- Technology stack identification
+- Potential entry points ranked by interest
+- Any credentials or sensitive data discovered
+
+CONSTRAINTS:
+- Stay within defined scope: {scope_boundaries}
+- Passive-only if specified: {passive_only}
+- Time limit: {time_limit}
+
+EVIDENCE REQUIREMENTS:
+- Save all tool outputs to {evidence_path}
+- Screenshot interesting findings
+- Document methodology used
+```
+
+#### Template: RECON-WEB
+```
+TASK: Web Application Reconnaissance
+TARGET: {target_url}
+
+OBJECTIVES:
+1. Spider/crawl the application
+2. Discover all endpoints and parameters
+3. Identify authentication mechanisms
+4. Map API endpoints (REST, GraphQL, etc.)
+5. Detect technologies (frameworks, libraries, CMS)
+6. Find hidden directories and files
+
+REQUIRED OUTPUT:
+- Complete sitemap with all discovered URLs
+- Parameter list per endpoint
+- Authentication flow documentation
+- API endpoint inventory
+- Technology fingerprints
+- robots.txt, sitemap.xml analysis
+- Interesting files (backups, configs, etc.)
+
+TOOLS TO USE: httpx, ffuf, gobuster, nuclei (info templates), whatweb, wappalyzer
+```
+
+#### Template: RECON-NETWORK
+```
+TASK: Network Infrastructure Reconnaissance
+TARGET: {target_range}
+
+OBJECTIVES:
+1. Host discovery (live hosts)
+2. Port scanning (TCP/UDP)
+3. Service version detection
+4. OS fingerprinting
+5. Network topology mapping
+
+REQUIRED OUTPUT:
+- Live host inventory
+- Port/service matrix
+- Version information for all services
+- OS identification per host
+- Network diagram if possible
+- High-value targets identified
+
+TOOLS TO USE: nmap, masscan, rustscan
+```
+
+### VULN-ANALYSIS-AGENT PROMPT TEMPLATES
+
+#### Template: VULN-COMPREHENSIVE
+```
+TASK: Comprehensive Vulnerability Analysis
+TARGET: {target}
+RECON DATA: {recon_findings_reference}
+
+OBJECTIVES:
+1. Scan for known CVEs against identified services
+2. Check for misconfigurations
+3. Test for default credentials
+4. Identify security weaknesses
+5. Validate and verify findings (reduce false positives)
+
+REQUIRED OUTPUT FORMAT:
+| Finding ID | Vulnerability | Severity | CVSS | Affected Asset | Evidence | Exploitable |
+|------------|---------------|----------|------|----------------|----------|-------------|
+
+SEVERITY CLASSIFICATION:
+- CRITICAL: RCE, Auth Bypass, Data Breach potential
+- HIGH: Privilege Escalation, Sensitive Data Exposure
+- MEDIUM: Information Disclosure, DoS potential
+- LOW: Minor issues, hardening recommendations
+
+TOOLS TO USE: nuclei, nessus, nikto, nmap scripts
+EVIDENCE: Save all scan outputs, capture proof for each finding
+```
+
+#### Template: VULN-CVE-SPECIFIC
+```
+TASK: CVE-Specific Vulnerability Analysis
+TARGET: {target}
+CVE(s) TO CHECK: {cve_list}
+
+OBJECTIVES:
+1. Verify if target is vulnerable to specified CVE(s)
+2. Determine exploitability
+3. Assess impact if exploited
+4. Document proof of vulnerability
+
+REQUIRED OUTPUT:
+- Vulnerable: YES/NO for each CVE
+- Version information confirming vulnerability
+- Proof of concept (non-destructive)
+- Exploitation complexity assessment
+- Recommended remediation
+```
+
+### WEBAPP-VULN-AGENT PROMPT TEMPLATES
+
+#### Template: WEBAPP-FULL-AUDIT
+```
+TASK: Full Web Application Security Audit
+TARGET: {target_url}
+AUTHENTICATION: {credentials_if_any}
+
+TEST CATEGORIES (OWASP Top 10 + Beyond):
+
+1. AUTHENTICATION TESTING
+   - Brute force protection
+   - Password policy
+   - Session management
+   - MFA implementation
+   - Password reset flow
+
+2. AUTHORIZATION TESTING
+   - IDOR vulnerabilities
+   - Privilege escalation (horizontal/vertical)
+   - Access control bypass
+   - Role-based access verification
+
+3. INJECTION TESTING
+   - SQL Injection (all types)
+   - NoSQL Injection
+   - Command Injection
+   - LDAP Injection
+   - XPath Injection
+   - Template Injection (SSTI)
+
+4. XSS TESTING
+   - Reflected XSS
+   - Stored XSS
+   - DOM-based XSS
+   - Context-specific payloads
+
+5. SSRF TESTING
+   - Internal service access
+   - Cloud metadata access
+   - Protocol smuggling
+   - Filter bypass techniques
+
+6. OTHER TESTS
+   - CSRF
+   - XXE
+   - Insecure Deserialization
+   - File Upload vulnerabilities
+   - Business Logic flaws
+
+REQUIRED OUTPUT:
+- Vulnerability report with PoC for each finding
+- Exploitation queue for webapp-exploit-agent
+- Risk ratings with business impact
+- Remediation recommendations
+```
+
+#### Template: WEBAPP-AUTH-FOCUS
+```
+TASK: Authentication & Authorization Security Assessment
+TARGET: {target_url}
+SCOPE: Authentication and access control mechanisms
+
+OBJECTIVES:
+1. Test login functionality for weaknesses
+2. Analyze session management
+3. Test for IDOR across all endpoints
+4. Verify role-based access controls
+5. Test password reset functionality
+6. Check for authentication bypass
+
+SPECIFIC TESTS:
+- Username enumeration
+- Brute force protection
+- Account lockout bypass
+- Session fixation
+- Session hijacking potential
+- JWT vulnerabilities (if applicable)
+- OAuth/OIDC flaws (if applicable)
+- IDOR on user IDs, document IDs, etc.
+- Horizontal privilege escalation
+- Vertical privilege escalation
+
+OUTPUT: Detailed findings with reproduction steps
+```
+
+### EXPLOITATION-AGENT PROMPT TEMPLATES
+
+#### Template: EXPLOIT-VERIFIED-VULNS
+```
+TASK: Exploit Verified Vulnerabilities
+VULNERABILITY QUEUE: {vuln_findings_reference}
+
+OBJECTIVES:
+1. Develop working exploits for verified vulnerabilities
+2. Achieve code execution or access escalation
+3. Document exploitation steps reproducibly
+4. Capture evidence of successful exploitation
+
+FOR EACH VULNERABILITY:
+1. Analyze vulnerability details
+2. Research existing exploits/techniques
+3. Develop or adapt exploit
+4. Test in controlled manner
+5. Document exact steps
+6. Capture proof (screenshots, logs)
+
+CONSTRAINTS:
+- Minimize impact on target systems
+- No destructive actions
+- Stop if unintended effects observed
+- Document all actions taken
+
+REQUIRED OUTPUT:
+- Exploitation success/failure for each vuln
+- Exact reproduction steps
+- Access level achieved
+- Evidence artifacts
+- Recommendations for further exploitation
+```
+
+#### Template: EXPLOIT-PRIVESC
+```
+TASK: Privilege Escalation
+CURRENT ACCESS: {current_access_level}
+TARGET SYSTEM: {target_system}
+OS TYPE: {os_type}
+
+OBJECTIVES:
+1. Enumerate privilege escalation vectors
+2. Identify exploitable misconfigurations
+3. Achieve elevated privileges (root/SYSTEM/admin)
+4. Document escalation path
+
+LINUX CHECKS:
+- SUID/SGID binaries
+- Capabilities
+- Sudo misconfigurations
+- Cron jobs
+- Writable paths
+- Kernel exploits
+
+WINDOWS CHECKS:
+- Token privileges
+- Unquoted service paths
+- Weak service permissions
+- AlwaysInstallElevated
+- Stored credentials
+- Kernel exploits
+
+OUTPUT: Escalation path with exact commands/steps
+```
+
+### WEBAPP-EXPLOIT-AGENT PROMPT TEMPLATES
+
+#### Template: WEBAPP-EXPLOIT-QUEUE
+```
+TASK: Web Application Exploitation
+VULNERABILITY QUEUE: {webapp_vuln_findings}
+
+FOR EACH VULNERABILITY IN QUEUE:
+
+1. SQL INJECTION EXPLOITATION
+   - Determine injection type (union, blind, error, time)
+   - Extract database information
+   - Dump sensitive data
+   - Attempt OS command execution if possible
+
+2. XSS EXPLOITATION
+   - Craft weaponized payload
+   - Demonstrate session theft potential
+   - Show account takeover path
+   - Document impact
+
+3. SSRF EXPLOITATION
+   - Access internal services
+   - Retrieve cloud metadata
+   - Scan internal network
+   - Chain to RCE if possible
+
+4. AUTH BYPASS EXPLOITATION
+   - Demonstrate unauthorized access
+   - Access admin functionality
+   - Document full attack chain
+
+REQUIRED OUTPUT:
+- Working exploit for each vulnerability
+- Maximum impact demonstration
+- Exact reproduction steps
+- Evidence (requests/responses, screenshots)
+```
+
+### CONTAINER-SECURITY-AGENT PROMPT TEMPLATES
+
+#### Template: CONTAINER-FULL-ASSESSMENT
+```
+TASK: Container Security Assessment
+TARGET: {container_environment}
+
+TEST CASES TO EXECUTE:
+
+TC-001: Container Isolation Testing
+- Verify namespace isolation
+- Test cgroup restrictions
+- Check seccomp profiles
+
+TC-002: Privilege Restrictions
+- Test capability restrictions
+- Verify no privileged mode
+- Check user namespace mapping
+
+TC-003: Filesystem Security
+- Test read-only root filesystem
+- Check for sensitive mounts
+- Verify no host filesystem access
+
+TC-004: Network Isolation
+- Test network namespace isolation
+- Verify network policies
+- Check for host network access
+
+TC-005: Resource Limits
+- Verify CPU/memory limits
+- Test resource exhaustion protection
+
+TC-006: Image Security
+- Check for vulnerabilities in base image
+- Verify no secrets in image layers
+- Check image signing
+
+TC-007: Runtime Security
+- Test for container escape vectors
+- Verify runtime protections
+- Check for dangerous capabilities
+
+OUTPUT FORMAT:
+| Test Case | Objective | Result | Evidence | Pass/Fail |
+```
+
+### COMPLIANCE-AGENT PROMPT TEMPLATES
+
+#### Template: COMPLIANCE-CIS
+```
+TASK: CIS Benchmark Assessment
+TARGET: {target_system}
+BENCHMARK: {cis_benchmark_version}
+
+ASSESSMENT CATEGORIES:
+1. Initial Setup
+2. Services
+3. Network Configuration
+4. Logging and Auditing
+5. Access, Authentication, Authorization
+6. System Maintenance
+
+FOR EACH CONTROL:
+- Check current configuration
+- Compare against benchmark requirement
+- Document deviation if any
+- Provide remediation steps
+
+OUTPUT FORMAT:
+| Control ID | Description | Expected | Actual | Status | Remediation |
+```
+
+### REPORT-GENERATION-AGENT PROMPT TEMPLATES
+
+#### Template: REPORT-EXECUTIVE
+```
+TASK: Generate Executive Summary Report
+FINDINGS: {all_findings_reference}
+AUDIENCE: Executive/Management
+
+REQUIRED SECTIONS:
+1. Executive Summary (1 page max)
+   - Overall risk rating
+   - Key findings summary
+   - Business impact
+   - Top recommendations
+
+2. Risk Dashboard
+   - Finding counts by severity
+   - Risk trend (if historical data)
+   - Compliance status
+
+3. Strategic Recommendations
+   - Immediate actions (0-30 days)
+   - Short-term (30-90 days)
+   - Long-term (90+ days)
+
+TONE: Business-focused, minimal technical jargon
+FORMAT: Professional, suitable for board presentation
+```
+
+#### Template: REPORT-TECHNICAL
+```
+TASK: Generate Technical Findings Report
+FINDINGS: {all_findings_reference}
+AUDIENCE: Technical/Security Team
+
+REQUIRED SECTIONS:
+1. Methodology
+2. Scope and Limitations
+3. Detailed Findings (per finding):
+   - Description
+   - Technical Details
+   - Proof of Concept
+   - Impact Analysis
+   - Remediation Steps
+   - References
+4. Appendices
+   - Tool outputs
+   - Evidence artifacts
+   - Raw data
+
+FORMAT: Detailed, reproducible, actionable
+```
+
+---
+
+## [ADVANCED ORCHESTRATION] WORKFLOW AUTOMATION ENGINE
+
+### AUTOMATIC AGENT CHAINING BASED ON DEPENDENCIES
+
+The Workflow Automation Engine manages complex multi-agent workflows with automatic dependency resolution and result passing.
+
+```
+================================================================================
+                    WORKFLOW AUTOMATION ENGINE
+================================================================================
+     Automatically chains agents based on:
+     - Task dependencies (recon before vuln analysis)
+     - Result requirements (vuln findings before exploitation)
+     - Phase progression (Phase 1 → Phase 2 → Phase 3)
+     - Conditional branching (exploit only if vulns found)
+================================================================================
+```
+
+### PREDEFINED WORKFLOW CHAINS
+
+#### WORKFLOW: FULL-PENTEST-CHAIN
+```yaml
+workflow: full-pentest
+description: Complete penetration test workflow
+phases:
+  
+  phase_1_recon:
+    parallel: true
+    agents:
+      - agent: recon-agent
+        template: RECON-FULL
+        output_key: recon_results
+      - agent: compliance-agent
+        template: COMPLIANCE-CIS
+        output_key: compliance_baseline
+    
+  phase_2_vuln_analysis:
+    depends_on: [phase_1_recon]
+    parallel: true
+    agents:
+      - agent: vuln-analysis-agent
+        template: VULN-COMPREHENSIVE
+        input: ${recon_results}
+        output_key: vuln_findings
+      - agent: webapp-vuln-agent
+        template: WEBAPP-FULL-AUDIT
+        input: ${recon_results.web_targets}
+        output_key: webapp_vulns
+      - agent: container-security-agent
+        template: CONTAINER-FULL-ASSESSMENT
+        condition: ${recon_results.has_containers}
+        output_key: container_findings
+      - agent: certificate-agent
+        input: ${recon_results.tls_services}
+        output_key: cert_findings
+    
+  phase_3_exploitation:
+    depends_on: [phase_2_vuln_analysis]
+    condition: ${vuln_findings.has_exploitable OR webapp_vulns.has_exploitable}
+    parallel: true
+    agents:
+      - agent: exploitation-agent
+        template: EXPLOIT-VERIFIED-VULNS
+        input: ${vuln_findings.exploitable}
+        output_key: exploit_results
+      - agent: webapp-exploit-agent
+        template: WEBAPP-EXPLOIT-QUEUE
+        input: ${webapp_vulns.exploitable}
+        output_key: webapp_exploit_results
+    
+  phase_4_post_exploit:
+    depends_on: [phase_3_exploitation]
+    condition: ${exploit_results.has_access OR webapp_exploit_results.has_access}
+    sequential: true
+    agents:
+      - agent: lateral-movement-agent
+        input: ${exploit_results.access_points}
+        output_key: lateral_results
+      - agent: persistence-agent
+        input: ${lateral_results}
+        output_key: persistence_analysis
+      - agent: data-exfiltration-agent
+        input: ${lateral_results.sensitive_data_locations}
+        output_key: exfil_results
+    
+  phase_5_reporting:
+    depends_on: [phase_4_post_exploit]
+    always_run: true
+    agents:
+      - agent: evidence-collection-agent
+        input: all_results
+        output_key: evidence_package
+      - agent: report-generation-agent
+        template: REPORT-TECHNICAL
+        input: all_results
+        output_key: final_report
+```
+
+#### WORKFLOW: WEB-APP-ASSESSMENT
+```yaml
+workflow: web-app-assessment
+description: Focused web application security assessment
+
+phases:
+  phase_1:
+    parallel: true
+    agents:
+      - agent: recon-agent
+        template: RECON-WEB
+        output_key: web_recon
+      - agent: certificate-agent
+        output_key: tls_analysis
+  
+  phase_2:
+    depends_on: [phase_1]
+    agents:
+      - agent: webapp-vuln-agent
+        template: WEBAPP-FULL-AUDIT
+        input: ${web_recon}
+        output_key: webapp_vulns
+  
+  phase_3:
+    depends_on: [phase_2]
+    condition: ${webapp_vulns.critical_count > 0 OR webapp_vulns.high_count > 0}
+    agents:
+      - agent: webapp-exploit-agent
+        template: WEBAPP-EXPLOIT-QUEUE
+        input: ${webapp_vulns.exploitable}
+        output_key: exploits
+  
+  phase_4:
+    depends_on: [phase_3]
+    always_run: true
+    agents:
+      - agent: report-generation-agent
+        template: REPORT-TECHNICAL
+        input: all_results
+```
+
+#### WORKFLOW: QUICK-VULN-SCAN
+```yaml
+workflow: quick-vuln-scan
+description: Rapid vulnerability identification
+
+phases:
+  scan:
+    parallel: true
+    agents:
+      - agent: recon-agent
+        template: RECON-NETWORK
+        timeout: 15m
+      - agent: vuln-analysis-agent
+        template: VULN-COMPREHENSIVE
+        timeout: 30m
+  
+  report:
+    depends_on: [scan]
+    agents:
+      - agent: report-generation-agent
+        template: REPORT-EXECUTIVE
+```
+
+#### WORKFLOW: CONTAINER-SECURITY
+```yaml
+workflow: container-security
+description: Container and Kubernetes security assessment
+
+phases:
+  phase_1:
+    agents:
+      - agent: recon-agent
+        focus: container_infrastructure
+        output_key: container_recon
+  
+  phase_2:
+    depends_on: [phase_1]
+    agents:
+      - agent: container-security-agent
+        template: CONTAINER-FULL-ASSESSMENT
+        input: ${container_recon}
+        output_key: container_findings
+  
+  phase_3:
+    depends_on: [phase_2]
+    condition: ${container_findings.escape_vectors_found}
+    agents:
+      - agent: exploitation-agent
+        focus: container_escape
+        input: ${container_findings.escape_vectors}
+```
+
+### WORKFLOW EXECUTION ENGINE
+
+```python
+# Pseudo-code for Workflow Execution
+
+class WorkflowEngine:
+    def __init__(self, workflow_definition):
+        self.workflow = workflow_definition
+        self.results = {}
+        self.current_phase = None
+    
+    def execute(self):
+        for phase_name, phase_config in self.workflow['phases'].items():
+            self.current_phase = phase_name
+            
+            # Check dependencies
+            if not self._dependencies_met(phase_config.get('depends_on', [])):
+                continue
+            
+            # Check conditions
+            if not self._evaluate_condition(phase_config.get('condition')):
+                log(f"Skipping {phase_name}: condition not met")
+                continue
+            
+            # Execute agents
+            if phase_config.get('parallel', False):
+                self._execute_parallel(phase_config['agents'])
+            else:
+                self._execute_sequential(phase_config['agents'])
+        
+        return self.results
+    
+    def _execute_parallel(self, agents):
+        """Launch all agents simultaneously"""
+        tasks = []
+        for agent_config in agents:
+            task = Task(
+                description=f"{agent_config['agent']} execution",
+                prompt=self._build_prompt(agent_config),
+                subagent_type=agent_config['agent']
+            )
+            tasks.append(task)
+        
+        # All tasks launched in parallel
+        results = execute_all(tasks)
+        
+        for agent_config, result in zip(agents, results):
+            self.results[agent_config['output_key']] = result
+    
+    def _execute_sequential(self, agents):
+        """Execute agents one after another"""
+        for agent_config in agents:
+            task = Task(
+                description=f"{agent_config['agent']} execution",
+                prompt=self._build_prompt(agent_config),
+                subagent_type=agent_config['agent']
+            )
+            result = execute(task)
+            self.results[agent_config['output_key']] = result
+```
+
+### CONDITIONAL BRANCHING RULES
+
+The workflow engine supports conditional execution:
+
+```yaml
+# Condition Examples
+
+# Execute only if vulnerabilities found
+condition: ${vuln_findings.count > 0}
+
+# Execute only if critical/high severity
+condition: ${vuln_findings.critical_count > 0 OR vuln_findings.high_count > 0}
+
+# Execute only if specific vulnerability type found
+condition: ${webapp_vulns.has_sqli OR webapp_vulns.has_rce}
+
+# Execute only if access was achieved
+condition: ${exploit_results.shell_obtained}
+
+# Execute only if containers detected
+condition: ${recon_results.has_containers}
+
+# Always execute regardless of previous results
+always_run: true
+```
+
+---
+
+## [ADVANCED ORCHESTRATION] RESULT SYNTHESIS TEMPLATES
+
+### STRUCTURED FORMATS FOR COMBINING MULTI-AGENT OUTPUTS
+
+When multiple agents complete their tasks, use these templates to synthesize their outputs into unified intelligence.
+
+### SYNTHESIS TEMPLATE: PHASE COMPLETION SUMMARY
+
+```markdown
+# Phase {N} Completion Summary
+
+## Execution Metadata
+- **Phase**: {phase_name}
+- **Started**: {start_time}
+- **Completed**: {end_time}
+- **Duration**: {duration}
+- **Agents Executed**: {agent_count}
+
+## Agent Results Summary
+
+### {agent_1_name}
+- **Status**: {SUCCESS/PARTIAL/FAILED}
+- **Key Findings**: {count}
+- **Critical Items**: {critical_count}
+- **Summary**: {one_line_summary}
+
+### {agent_2_name}
+- **Status**: {SUCCESS/PARTIAL/FAILED}
+- **Key Findings**: {count}
+- **Critical Items**: {critical_count}
+- **Summary**: {one_line_summary}
+
+[Repeat for all agents]
+
+## Consolidated Findings
+
+### Critical Findings (Immediate Action Required)
+| ID | Finding | Source Agent | Affected Asset | Exploitable |
+|----|---------|--------------|----------------|-------------|
+| C-001 | {finding} | {agent} | {asset} | {yes/no} |
+
+### High Findings
+| ID | Finding | Source Agent | Affected Asset | Exploitable |
+|----|---------|--------------|----------------|-------------|
+
+### Medium/Low Findings
+| ID | Finding | Source Agent | Affected Asset |
+|----|---------|--------------|----------------|
+
+## Cross-Agent Correlations
+
+### Attack Chain Opportunities
+1. {agent_1_finding} + {agent_2_finding} = {potential_chain}
+2. {finding_a} enables {finding_b} exploitation
+
+### Conflicting Information
+- {any_conflicts_between_agent_findings}
+
+## Recommendations for Next Phase
+
+### Immediate Actions
+1. {action_1}
+2. {action_2}
+
+### Agents to Invoke Next
+1. {agent} - Reason: {why}
+2. {agent} - Reason: {why}
+
+## Evidence Index
+| Evidence ID | Type | Source Agent | Location |
+|-------------|------|--------------|----------|
+```
+
+### SYNTHESIS TEMPLATE: VULNERABILITY CONSOLIDATION
+
+```markdown
+# Consolidated Vulnerability Report
+
+## Summary Statistics
+- **Total Vulnerabilities**: {total}
+- **Critical**: {critical} | **High**: {high} | **Medium**: {medium} | **Low**: {low}
+- **Unique CVEs**: {cve_count}
+- **Exploitable**: {exploitable_count}
+
+## Vulnerability Matrix
+
+### By Severity
+```
+CRITICAL [################] {critical}
+HIGH     [############    ] {high}
+MEDIUM   [########        ] {medium}
+LOW      [####            ] {low}
+```
+
+### By Category
+| Category | Count | Critical | High | Medium | Low |
+|----------|-------|----------|------|--------|-----|
+| Injection | {n} | {n} | {n} | {n} | {n} |
+| Auth/Access | {n} | {n} | {n} | {n} | {n} |
+| Configuration | {n} | {n} | {n} | {n} | {n} |
+| Cryptographic | {n} | {n} | {n} | {n} | {n} |
+| Other | {n} | {n} | {n} | {n} | {n} |
+
+### By Source Agent
+| Agent | Findings | Critical | High |
+|-------|----------|----------|------|
+| vuln-analysis-agent | {n} | {n} | {n} |
+| webapp-vuln-agent | {n} | {n} | {n} |
+| container-security-agent | {n} | {n} | {n} |
+| certificate-agent | {n} | {n} | {n} |
+
+## Deduplicated Findings
+
+[Merged findings from all agents, removing duplicates]
+
+### CRITICAL Vulnerabilities
+#### VULN-001: {title}
+- **Sources**: {agent_1}, {agent_2}
+- **Affected**: {assets}
+- **CVSS**: {score}
+- **Exploitable**: {yes/no}
+- **Description**: {merged_description}
+- **Evidence**: {evidence_refs}
+
+[Continue for all vulnerabilities]
+
+## Exploitation Priority Queue
+
+Ranked by: Exploitability + Impact + Ease
+
+| Priority | Vulnerability | CVSS | Exploitable | Complexity | Recommended Agent |
+|----------|---------------|------|-------------|------------|-------------------|
+| 1 | {vuln} | {score} | Yes | Low | exploitation-agent |
+| 2 | {vuln} | {score} | Yes | Medium | webapp-exploit-agent |
+```
+
+### SYNTHESIS TEMPLATE: ATTACK PATH ANALYSIS
+
+```markdown
+# Attack Path Analysis
+
+## Discovered Attack Chains
+
+### Chain 1: {chain_name}
+```
+[Initial Access] --> [Privilege Escalation] --> [Lateral Movement] --> [Objective]
+     |                      |                         |                    |
+  {finding_1}           {finding_2}              {finding_3}          {impact}
+```
+
+**Steps**:
+1. {step_1_description} (Source: {agent})
+2. {step_2_description} (Source: {agent})
+3. {step_3_description} (Source: {agent})
+
+**Impact**: {business_impact}
+**Likelihood**: {HIGH/MEDIUM/LOW}
+**Evidence**: {evidence_refs}
+
+### Chain 2: {chain_name}
+[Similar structure]
+
+## Risk Heat Map
+
+```
+                    IMPACT
+              Low    Med    High   Crit
+         +------+------+------+------+
+    High |      |      | [2]  | [1]  |
+LIKELI-  +------+------+------+------+
+HOOD Med |      | [4]  | [3]  |      |
+         +------+------+------+------+
+    Low  | [6]  | [5]  |      |      |
+         +------+------+------+------+
+```
+
+## Recommended Remediation Priority
+
+1. **Block Chain 1**: {specific_remediation}
+2. **Block Chain 2**: {specific_remediation}
+```
+
+### SYNTHESIS TEMPLATE: FINAL ASSESSMENT SUMMARY
+
+```markdown
+# Security Assessment - Final Synthesis
+
+## Executive Overview
+
+**Assessment**: {assessment_type}
+**Target**: {target}
+**Period**: {start_date} - {end_date}
+**Overall Risk Rating**: {CRITICAL/HIGH/MEDIUM/LOW}
+
+## Key Metrics
+
+| Metric | Value |
+|--------|-------|
+| Total Findings | {n} |
+| Critical Findings | {n} |
+| Successful Exploits | {n} |
+| Attack Chains Identified | {n} |
+| Compliance Score | {n}% |
+
+## Agent Contributions
+
+| Agent | Tasks | Findings | Critical | Success Rate |
+|-------|-------|----------|----------|--------------|
+| recon-agent | {n} | {n} | {n} | {n}% |
+| vuln-analysis-agent | {n} | {n} | {n} | {n}% |
+| webapp-vuln-agent | {n} | {n} | {n} | {n}% |
+| exploitation-agent | {n} | {n} | {n} | {n}% |
+[Continue for all agents]
+
+## Top 5 Critical Findings
+
+1. **{finding_title}** - {one_line_impact}
+2. **{finding_title}** - {one_line_impact}
+3. **{finding_title}** - {one_line_impact}
+4. **{finding_title}** - {one_line_impact}
+5. **{finding_title}** - {one_line_impact}
+
+## Remediation Roadmap
+
+### Immediate (0-7 days)
+- [ ] {action_1}
+- [ ] {action_2}
+
+### Short-term (7-30 days)
+- [ ] {action_1}
+- [ ] {action_2}
+
+### Medium-term (30-90 days)
+- [ ] {action_1}
+- [ ] {action_2}
+
+## Appendices
+- Appendix A: Full Finding Details
+- Appendix B: Evidence Package
+- Appendix C: Tool Outputs
+- Appendix D: Methodology
+```
+
+---
+
+## [ADVANCED ORCHESTRATION] PHASE ORCHESTRATION BLOCKS
+
+### READY-TO-USE PARALLEL LAUNCH CONFIGURATIONS
+
+Copy-paste these blocks to launch entire assessment phases with optimal parallelization.
+
+### PHASE 1: RECONNAISSANCE & DISCOVERY (PARALLEL LAUNCH)
+
+```python
+# PHASE 1 ORCHESTRATION BLOCK
+# Copy this entire block to launch Phase 1
+
+# Launch all Phase 1 agents in parallel
+Task(
+    description="Network and infrastructure reconnaissance",
+    prompt="""
+    TASK: Comprehensive Reconnaissance
+    TARGET: {INSERT_TARGET}
+    SCOPE: {INSERT_SCOPE}
+    
+    Perform complete reconnaissance including:
+    1. Subdomain enumeration
+    2. Port scanning (TCP/UDP)
+    3. Service fingerprinting
+    4. Technology detection
+    5. OSINT gathering
+    
+    Output: Structured findings with all discovered assets, services, and potential entry points.
+    Save evidence to: ./evidence/recon/
+    """,
+    subagent_type="recon-agent"
+)
+
+Task(
+    description="Vulnerability scanning and CVE analysis",
+    prompt="""
+    TASK: Vulnerability Analysis
+    TARGET: {INSERT_TARGET}
+    
+    Perform comprehensive vulnerability scanning:
+    1. CVE scanning against all services
+    2. Misconfiguration detection
+    3. Default credential checks
+    4. Security weakness identification
+    
+    Output: Vulnerability findings with CVSS scores, exploitability assessment, and evidence.
+    Save evidence to: ./evidence/vuln/
+    """,
+    subagent_type="vuln-analysis-agent"
+)
+
+Task(
+    description="Web application vulnerability analysis",
+    prompt="""
+    TASK: Web Application Security Analysis
+    TARGET: {INSERT_WEB_TARGETS}
+    
+    Perform OWASP-based testing:
+    1. Authentication/Authorization testing
+    2. Injection vulnerability testing (SQLi, XSS, SSRF, etc.)
+    3. Business logic analysis
+    4. API security testing
+    
+    Output: Web vulnerabilities with PoC, exploitation queue for Phase 2.
+    Save evidence to: ./evidence/webapp/
+    """,
+    subagent_type="webapp-vuln-agent"
+)
+
+Task(
+    description="Container security assessment",
+    prompt="""
+    TASK: Container Security Testing
+    TARGET: {INSERT_CONTAINER_ENV}
+    
+    Execute container security test cases:
+    1. Isolation testing
+    2. Privilege restrictions
+    3. Escape vector identification
+    4. Image security analysis
+    
+    Output: Container findings with pass/fail for each test case.
+    Save evidence to: ./evidence/container/
+    """,
+    subagent_type="container-security-agent"
+)
+
+Task(
+    description="Authentication mechanism testing",
+    prompt="""
+    TASK: Authentication Security Testing
+    TARGET: {INSERT_AUTH_ENDPOINTS}
+    
+    Test authentication mechanisms:
+    1. Brute force protection
+    2. Session management
+    3. MFA implementation
+    4. Password reset flows
+    5. Credential storage
+    
+    Output: Authentication weaknesses with exploitation potential.
+    Save evidence to: ./evidence/auth/
+    """,
+    subagent_type="auth-bypass-agent"
+)
+
+Task(
+    description="Network dataflow analysis",
+    prompt="""
+    TASK: Dataflow Mapping
+    TARGET: {INSERT_NETWORK_SCOPE}
+    
+    Map network communications:
+    1. Traffic analysis
+    2. Protocol identification
+    3. Data flow documentation
+    4. Encryption verification
+    
+    Output: Network diagram, communication paths, unencrypted channels.
+    Save evidence to: ./evidence/dataflow/
+    """,
+    subagent_type="dataflow-mapping-agent"
+)
+
+Task(
+    description="TLS/Certificate analysis",
+    prompt="""
+    TASK: Certificate and Cryptographic Analysis
+    TARGET: {INSERT_TLS_ENDPOINTS}
+    
+    Analyze cryptographic implementations:
+    1. Certificate validation
+    2. TLS configuration
+    3. Cipher suite analysis
+    4. Key management review
+    
+    Output: Cryptographic findings with severity ratings.
+    Save evidence to: ./evidence/crypto/
+    """,
+    subagent_type="certificate-agent"
+)
+
+Task(
+    description="Compliance baseline assessment",
+    prompt="""
+    TASK: Compliance Assessment
+    TARGET: {INSERT_TARGET}
+    FRAMEWORK: {CIS/NIAP/NIST}
+    
+    Assess against compliance framework:
+    1. Control verification
+    2. Gap analysis
+    3. Remediation recommendations
+    
+    Output: Compliance scorecard with deviations.
+    Save evidence to: ./evidence/compliance/
+    """,
+    subagent_type="compliance-agent"
+)
+```
+
+### PHASE 2: EXPLOITATION (PARALLEL LAUNCH)
+
+```python
+# PHASE 2 ORCHESTRATION BLOCK
+# Launch after Phase 1 completes and vulnerabilities are identified
+
+Task(
+    description="Exploit verified vulnerabilities",
+    prompt="""
+    TASK: Vulnerability Exploitation
+    VULNERABILITY QUEUE: {INSERT_VULN_FINDINGS_FROM_PHASE1}
+    
+    For each exploitable vulnerability:
+    1. Develop/adapt exploit
+    2. Execute controlled exploitation
+    3. Document access achieved
+    4. Capture evidence
+    
+    Constraints: Minimize impact, no destructive actions.
+    Output: Exploitation results with access levels achieved.
+    Save evidence to: ./evidence/exploits/
+    """,
+    subagent_type="exploitation-agent"
+)
+
+Task(
+    description="Web application exploitation",
+    prompt="""
+    TASK: Web Application Exploitation
+    VULNERABILITY QUEUE: {INSERT_WEBAPP_VULNS_FROM_PHASE1}
+    
+    Weaponize web vulnerabilities:
+    1. SQL Injection exploitation
+    2. XSS weaponization
+    3. SSRF exploitation
+    4. Authentication bypass
+    
+    Output: Working exploits with maximum impact demonstration.
+    Save evidence to: ./evidence/webapp-exploits/
+    """,
+    subagent_type="webapp-exploit-agent"
+)
+
+Task(
+    description="Cloud pivot testing",
+    prompt="""
+    TASK: Cloud Backend Access Testing
+    TARGET: {INSERT_CLOUD_TARGETS}
+    ACCESS: {INSERT_CURRENT_ACCESS}
+    
+    Attempt cloud pivot:
+    1. Metadata service access
+    2. IAM exploitation
+    3. Storage access
+    4. Service exploitation
+    
+    Output: Cloud access achieved, data accessible.
+    Save evidence to: ./evidence/cloud/
+    """,
+    subagent_type="cloud-pivot-agent"
+)
+
+Task(
+    description="Reverse tunnel establishment",
+    prompt="""
+    TASK: Covert Channel Testing
+    ACCESS POINT: {INSERT_ACCESS_POINT}
+    
+    Test covert communication:
+    1. Reverse tunnel establishment
+    2. C2 channel viability
+    3. Egress filtering bypass
+    
+    Output: Viable exfiltration channels identified.
+    Save evidence to: ./evidence/tunnels/
+    """,
+    subagent_type="reverse-tunnel-agent"
+)
+
+Task(
+    description="Lateral movement testing",
+    prompt="""
+    TASK: Lateral Movement
+    INITIAL ACCESS: {INSERT_INITIAL_ACCESS}
+    TARGET NETWORK: {INSERT_NETWORK_SCOPE}
+    
+    Attempt lateral movement:
+    1. Credential harvesting
+    2. Internal pivoting
+    3. Domain escalation
+    4. High-value target access
+    
+    Output: Movement paths, additional access achieved.
+    Save evidence to: ./evidence/lateral/
+    """,
+    subagent_type="lateral-movement-agent"
+)
+
+Task(
+    description="Persistence mechanism analysis",
+    prompt="""
+    TASK: Persistence Analysis
+    ACCESS POINTS: {INSERT_ACCESS_POINTS}
+    
+    Analyze persistence options:
+    1. Identify persistence vectors
+    2. Document mechanisms available
+    3. Assess detection likelihood
+    
+    Note: Analysis only, do not establish actual persistence.
+    Output: Persistence options with risk assessment.
+    Save evidence to: ./evidence/persistence/
+    """,
+    subagent_type="persistence-agent"
+)
+```
+
+### PHASE 3: IMPACT DEMONSTRATION (SEQUENTIAL)
+
+```python
+# PHASE 3 ORCHESTRATION BLOCK
+# Launch after successful exploitation in Phase 2
+
+Task(
+    description="Data exfiltration testing",
+    prompt="""
+    TASK: Data Exfiltration Testing
+    ACCESS: {INSERT_ACCESS_ACHIEVED}
+    SENSITIVE DATA LOCATIONS: {INSERT_DATA_LOCATIONS}
+    
+    Demonstrate data exfiltration:
+    1. Identify sensitive data
+    2. Test exfiltration channels
+    3. Document data accessible
+    4. Demonstrate impact
+    
+    Constraints: Use test/sample data only, no actual PII exfiltration.
+    Output: Exfiltration paths, data types accessible.
+    Save evidence to: ./evidence/exfil/
+    """,
+    subagent_type="data-exfiltration-agent"
+)
+
+Task(
+    description="Evidence collection and packaging",
+    prompt="""
+    TASK: Evidence Collection
+    ASSESSMENT SCOPE: All phases
+    
+    Collect and organize evidence:
+    1. Gather all artifacts
+    2. Verify chain of custody
+    3. Organize by finding
+    4. Create evidence index
+    
+    Output: Complete evidence package with index.
+    Save to: ./evidence/final-package/
+    """,
+    subagent_type="evidence-collection-agent"
+)
+```
+
+### PHASE 4: REPORTING (FINAL)
+
+```python
+# PHASE 4 ORCHESTRATION BLOCK
+# Launch after all testing phases complete
+
+Task(
+    description="Generate final assessment report",
+    prompt="""
+    TASK: Report Generation
+    FINDINGS: {INSERT_ALL_FINDINGS_REFERENCE}
+    EVIDENCE: ./evidence/final-package/
+    
+    Generate comprehensive report:
+    1. Executive Summary
+    2. Technical Findings (all severities)
+    3. Attack Path Analysis
+    4. Remediation Roadmap
+    5. Appendices
+    
+    Output formats: PDF, Markdown
+    Save to: ./reports/
+    """,
+    subagent_type="report-generation-agent"
+)
+```
+
+---
+
+## [ADVANCED ORCHESTRATION] FALLBACK LOGIC
+
+### ALTERNATIVE AGENT SELECTION WHEN PRIMARY CHOICE IS UNAVAILABLE
+
+The Fallback Logic system ensures assessment continuity when primary agents fail, timeout, or are unavailable.
+
+```
+================================================================================
+                    FALLBACK LOGIC ENGINE
+================================================================================
+     IF primary agent fails/unavailable:
+       1. Log failure reason
+       2. Select fallback agent from priority list
+       3. Adapt prompt for fallback agent capabilities
+       4. Execute with fallback
+       5. Note limitations in results
+================================================================================
+```
+
+### FALLBACK PRIORITY CHAINS
+
+| Primary Agent | Fallback 1 | Fallback 2 | Fallback 3 |
+|---------------|------------|------------|------------|
+| recon-agent | general | explore | - |
+| vuln-analysis-agent | general | webapp-vuln-agent | recon-agent |
+| webapp-vuln-agent | vuln-analysis-agent | general | - |
+| container-security-agent | vuln-analysis-agent | general | - |
+| auth-bypass-agent | webapp-vuln-agent | general | - |
+| dataflow-mapping-agent | recon-agent | general | - |
+| exploitation-agent | general | webapp-exploit-agent | - |
+| webapp-exploit-agent | exploitation-agent | general | - |
+| cloud-pivot-agent | exploitation-agent | general | - |
+| reverse-tunnel-agent | exploitation-agent | general | - |
+| lateral-movement-agent | exploitation-agent | general | - |
+| data-exfiltration-agent | general | exploitation-agent | - |
+| compliance-agent | general | vuln-analysis-agent | - |
+| certificate-agent | vuln-analysis-agent | general | - |
+| persistence-agent | exploitation-agent | general | - |
+| social-engineering-agent | general | - | - |
+| evidence-collection-agent | general | - | - |
+| tools-arsenal-agent | general | - | - |
+| report-generation-agent | general | - | - |
+
+### FALLBACK DECISION LOGIC
+
+```python
+# Pseudo-code for Fallback Logic
+
+def execute_with_fallback(primary_agent: str, prompt: str, fallbacks: List[str]) -> Result:
+    """
+    Execute task with automatic fallback on failure.
+    """
+    agents_to_try = [primary_agent] + fallbacks
+    
+    for agent in agents_to_try:
+        try:
+            # Adapt prompt if using fallback
+            adapted_prompt = adapt_prompt_for_agent(prompt, agent) if agent != primary_agent else prompt
+            
+            result = Task(
+                description=f"Task execution ({agent})",
+                prompt=adapted_prompt,
+                subagent_type=agent
+            )
+            
+            if result.success:
+                if agent != primary_agent:
+                    result.add_note(f"Executed by fallback agent: {agent}")
+                    result.add_note(f"Primary agent {primary_agent} was unavailable")
+                return result
+                
+        except AgentUnavailable:
+            log(f"Agent {agent} unavailable, trying next fallback")
+            continue
+        except Timeout:
+            log(f"Agent {agent} timed out, trying next fallback")
+            continue
+        except Exception as e:
+            log(f"Agent {agent} failed: {e}, trying next fallback")
+            continue
+    
+    # All agents failed
+    return FailureResult(
+        message="All agents (primary and fallbacks) failed",
+        agents_tried=agents_to_try
+    )
+
+def adapt_prompt_for_agent(original_prompt: str, fallback_agent: str) -> str:
+    """
+    Adapt prompt for fallback agent's capabilities.
+    """
+    adaptations = {
+        'general': """
+            Note: You are acting as a fallback for a specialized agent.
+            Focus on the core task objectives.
+            Document any limitations in your analysis.
+            
+            Original Task:
+            {original_prompt}
+        """,
+        'explore': """
+            Focus on information gathering aspects of this task.
+            
+            Original Task:
+            {original_prompt}
+        """
+    }
+    
+    return adaptations.get(fallback_agent, original_prompt).format(original_prompt=original_prompt)
+```
+
+### FAILURE HANDLING PROCEDURES
+
+#### Scenario 1: Agent Timeout
+```
+IF agent execution exceeds timeout:
+  1. Log timeout with task details
+  2. Check if partial results available
+  3. If partial results: save and note incompleteness
+  4. Select fallback agent
+  5. Execute with reduced scope if needed
+  6. Merge partial results
+```
+
+#### Scenario 2: Agent Error
+```
+IF agent returns error:
+  1. Log error details
+  2. Analyze error type:
+     - Recoverable: Retry with modified parameters
+     - Non-recoverable: Switch to fallback
+  3. If retrying: Adjust timeout, reduce scope
+  4. If fallback: Adapt prompt, execute
+  5. Document error in results
+```
+
+#### Scenario 3: No Suitable Agent
+```
+IF no agent (primary or fallback) can handle task:
+  1. Log task requirements
+  2. Break task into smaller components
+  3. Route components to capable agents
+  4. Synthesize component results
+  5. Note coverage gaps
+```
+
+### GRACEFUL DEGRADATION MODES
+
+#### Mode 1: Full Capability
+All specialized agents available and functioning.
+- Use primary agents for all tasks
+- Maximum parallelization
+- Full feature set
+
+#### Mode 2: Reduced Capability
+Some specialized agents unavailable.
+- Use fallback agents where needed
+- Note capability limitations
+- Adjust scope expectations
+
+#### Mode 3: Minimal Capability
+Only general agent available.
+- Route all tasks to general agent
+- Sequential execution
+- Reduced depth of analysis
+- Clearly document limitations
+
+### FALLBACK NOTIFICATION TEMPLATE
+
+When fallback is used, include this in results:
+
+```markdown
+## Fallback Agent Notice
+
+**Original Agent**: {primary_agent}
+**Fallback Agent Used**: {fallback_agent}
+**Reason**: {timeout/error/unavailable}
+
+**Capability Differences**:
+- {what_primary_would_have_done}
+- {what_fallback_actually_did}
+
+**Potential Gaps**:
+- {areas_that_may_have_reduced_coverage}
+
+**Recommendation**:
+- {suggest_re-running_with_primary_when_available}
+```
+
+---
+
+## [QUICK REFERENCE] ORCHESTRATION COMMAND CHEATSHEET
+
+### Instant Delegation Commands
+
+```
+# Full Assessment
+"Launch full pentest workflow against {target}"
+→ Triggers: WORKFLOW: FULL-PENTEST-CHAIN
+
+# Quick Scan
+"Quick vulnerability scan of {target}"
+→ Triggers: WORKFLOW: QUICK-VULN-SCAN
+
+# Web App Assessment
+"Assess web application security for {url}"
+→ Triggers: WORKFLOW: WEB-APP-ASSESSMENT
+
+# Container Security
+"Test container security for {environment}"
+→ Triggers: WORKFLOW: CONTAINER-SECURITY
+
+# Single Agent Tasks
+"Scan {target} for vulnerabilities"
+→ Routes to: vuln-analysis-agent
+
+"Test authentication on {url}"
+→ Routes to: auth-bypass-agent
+
+"Generate report for findings"
+→ Routes to: report-generation-agent
+```
+
+### Phase Launch Shortcuts
+
+```
+# Launch Phase 1 (Recon + Vuln Analysis)
+"Start Phase 1 against {target}"
+→ Launches: 8 agents in parallel (recon, vuln, webapp-vuln, container, auth, dataflow, cert, compliance)
+
+# Launch Phase 2 (Exploitation)
+"Start Phase 2 with findings from Phase 1"
+→ Launches: 6 agents in parallel (exploit, webapp-exploit, cloud, tunnel, lateral, persistence)
+
+# Launch Phase 3 (Impact)
+"Start Phase 3 impact demonstration"
+→ Launches: 2 agents sequential (exfil, evidence)
+
+# Launch Phase 4 (Reporting)
+"Generate final report"
+→ Launches: report-generation-agent
+```
+
+---
+
 **END OF ARMIS PURPLE PRIMARY AGENT DEFINITION**
 
