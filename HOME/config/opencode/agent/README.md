@@ -11,7 +11,7 @@ This directory contains all specialized sub-agents that support the Armis Purple
 ### Primary Orchestration Agent
 
 The primary orchestration agent is defined at:
-- **File**: `/home/ap/.config/opencode/armis-purple.md`
+- **File**: `/home/ap/.config/opencode/armis-purple-latest.md`
 - **Config**: Configured in `opencode.jsonc` as the primary agent
 
 > **Note**: The primary agent (`armis-purple`) is an **orchestrator** that delegates all specialized tasks to the sub-agents listed below. It does NOT perform security testing directly.
@@ -22,15 +22,19 @@ The primary orchestration agent is defined at:
 |------------|-------------|-----------|
 | `recon-agent.md` | Deep System Reconnaissance (OSINT & Local) | (1) Gather critical details about collector and Debian OS |
 | `vuln-analysis-agent.md` | Configuration & Vulnerability Analysis | (2) Identify security misconfigurations |
+| `webapp-vuln-agent.md` | Web Application Vulnerability Analysis | Analyze web app auth, authz, injection, XSS, SSRF vulnerabilities |
 | `container-security-agent.md` | Container Escape & Security Testing | Test container security (TC-001 to TC-007) |
 | `auth-bypass-agent.md` | Authentication Bypass & Account Mapping | (3) Identify unauthenticated access vectors |
 | `dataflow-mapping-agent.md` | Critical Dataflow Mapping | (4) Document communication paths to backend |
+| `certificate-agent.md` | Certificate & Cryptographic Analysis | Certificate validity verification (TC-010) |
+| `compliance-agent.md` | CIS & NIAP Compliance Assessment | CIS Debian 11 & NIAP PP-OS v4.3 compliance |
 
 ### Phase 2: Exploitation and Lateral Movement
 
 | Agent File | Description | Objective |
 |------------|-------------|-----------|
 | `exploitation-agent.md` | Vulnerability Exploitation & PoC Development | Develop and execute exploits |
+| `webapp-exploit-agent.md` | Web Application Exploitation | Weaponize web vulnerabilities (SQLi, XSS, SSRF, auth bypass) |
 | `cloud-pivot-agent.md` | Cloud Back-end Pivot via Collector | (5) Pivot to backend using collector access |
 | `reverse-tunnel-agent.md` | Reverse Tunneling & Covert Channels | (6) Establish reverse tunnel to backend |
 | `lateral-movement-agent.md` | Internal Lateral Movement | (7) Move between systems and collectors |
@@ -42,12 +46,10 @@ The primary orchestration agent is defined at:
 |------------|-------------|-----------|
 | `data-exfiltration-agent.md` | Data Exfiltration from Cloud Back-end | (8) Demonstrate data exfiltration capability |
 
-### Continuous/Support Agents
+### Support Agents
 
 | Agent File | Description | Purpose |
 |------------|-------------|---------|
-| `compliance-agent.md` | CIS & NIAP Compliance Assessment | CIS Debian 11 & NIAP PP-OS v4.3 compliance |
-| `certificate-agent.md` | Certificate & Cryptographic Analysis | Certificate validity verification (TC-010) |
 | `evidence-collection-agent.md` | Evidence Collection & Chain of Custody | Collect and preserve all evidence |
 | `tools-arsenal-agent.md` | Security Tools Management | Manage and document all tools |
 | `social-engineering-agent.md` | Social Engineering Assessment | Phishing/pretexting if authorized |
@@ -66,14 +68,14 @@ The primary orchestration agent is defined at:
 | TC-007 | container-security-agent | Image Signing Verification |
 | TC-008 | auth-bypass-agent | Low-Privilege Command Escalation |
 | TC-009 | auth-bypass-agent | Authentication Lockout |
-| TC-010 | certificate-agent | Certificate Validity Period (≤13 months) |
+| TC-010 | certificate-agent | Certificate Validity Period (<=13 months) |
 
 ## Objective Coverage
 
 | Objective | Agent(s) | Phase |
 |-----------|----------|-------|
 | (1) Deep System Reconnaissance | recon-agent | Phase 1 |
-| (2) Configuration and Vulnerability Analysis | vuln-analysis-agent | Phase 1 |
+| (2) Configuration and Vulnerability Analysis | vuln-analysis-agent, webapp-vuln-agent | Phase 1 |
 | (3) Authentication Bypass and Account Mapping | auth-bypass-agent | Phase 1 |
 | (4) Critical Dataflow Mapping | dataflow-mapping-agent | Phase 1 |
 | (5) Cloud Back-end Pivot via Collector | cloud-pivot-agent | Phase 2 |
@@ -89,26 +91,35 @@ The primary orchestration agent is defined at:
 | NIAP PP-OS v4.3 | compliance-agent | Protection profile verification |
 | NIST 800-53 | vuln-analysis-agent | Control correlation |
 | NIST 800-115 | report-generation-agent | Methodology documentation |
+| OWASP Top 10 | webapp-vuln-agent, webapp-exploit-agent | Web application security |
 | MITRE ATT&CK | All agents | Technique mapping |
 
 ## Agent Dependencies
 
 ```
-armis-purple-primary
-├── Phase 1 Agents
+armis-purple-primary (Orchestrator)
+├── Phase 1 Agents (Parallel Execution)
 │   ├── recon-agent
-│   │   └── feeds → vuln-analysis-agent, dataflow-mapping-agent
+│   │   └── feeds → vuln-analysis-agent, webapp-vuln-agent, dataflow-mapping-agent
 │   ├── vuln-analysis-agent
 │   │   └── feeds → exploitation-agent, compliance-agent
+│   ├── webapp-vuln-agent
+│   │   └── feeds → webapp-exploit-agent, exploitation-agent
 │   ├── container-security-agent
 │   │   └── feeds → exploitation-agent, lateral-movement-agent
 │   ├── auth-bypass-agent
-│   │   └── feeds → exploitation-agent, cloud-pivot-agent
-│   └── dataflow-mapping-agent
-│       └── feeds → cloud-pivot-agent, reverse-tunnel-agent
-├── Phase 2 Agents
+│   │   └── feeds → exploitation-agent, webapp-exploit-agent, cloud-pivot-agent
+│   ├── dataflow-mapping-agent
+│   │   └── feeds → cloud-pivot-agent, reverse-tunnel-agent
+│   ├── certificate-agent
+│   │   └── feeds → compliance-agent, report-generation-agent
+│   └── compliance-agent
+│       └── feeds → report-generation-agent
+├── Phase 2 Agents (After Phase 1 Completes)
 │   ├── exploitation-agent
 │   │   └── feeds → lateral-movement-agent, persistence-agent
+│   ├── webapp-exploit-agent
+│   │   └── feeds → lateral-movement-agent, cloud-pivot-agent, data-exfiltration-agent
 │   ├── cloud-pivot-agent
 │   │   └── feeds → lateral-movement-agent, data-exfiltration-agent
 │   ├── reverse-tunnel-agent
@@ -117,12 +128,10 @@ armis-purple-primary
 │   │   └── feeds → data-exfiltration-agent
 │   └── persistence-agent
 │       └── feeds → report-generation-agent
-├── Phase 3 Agents
+├── Phase 3 Agents (After Successful Exploitation)
 │   └── data-exfiltration-agent
 │       └── feeds → report-generation-agent
-└── Support Agents
-    ├── compliance-agent → report-generation-agent
-    ├── certificate-agent → compliance-agent, report-generation-agent
+└── Support Agents (Continuous)
     ├── evidence-collection-agent → report-generation-agent
     ├── tools-arsenal-agent → All agents
     ├── social-engineering-agent → report-generation-agent
@@ -138,6 +147,10 @@ There are two methods to invoke sub-agents:
 **Method 1: @ Mention (Direct)**
 ```
 @recon-agent Perform comprehensive reconnaissance on the target collector system
+```
+
+```
+@webapp-vuln-agent Analyze the web application for authentication and injection vulnerabilities
 ```
 
 ```
@@ -157,19 +170,86 @@ Task(
 )
 ```
 
+```python
+Task(
+    description="Web app vulnerability analysis",
+    prompt="Analyze the web application for OWASP Top 10 vulnerabilities including auth, injection, and SSRF",
+    subagent_type="webapp-vuln-agent"
+)
+```
+
 ### Parallel Execution for Maximum Performance
 
 Launch multiple independent agents simultaneously:
+
+**Phase 1 Parallel Execution:**
 ```python
-# Phase 1 parallel execution
-Task(description="Recon", prompt="...", subagent_type="recon-agent")
-Task(description="Vuln scan", prompt="...", subagent_type="vuln-analysis-agent")
-Task(description="Container tests", prompt="...", subagent_type="container-security-agent")
-Task(description="Auth testing", prompt="...", subagent_type="auth-bypass-agent")
+# Launch ALL Phase 1 agents simultaneously
+Task(description="Deep reconnaissance", prompt="...", subagent_type="recon-agent")
+Task(description="Vulnerability analysis", prompt="...", subagent_type="vuln-analysis-agent")
+Task(description="Web app vulnerability analysis", prompt="...", subagent_type="webapp-vuln-agent")
+Task(description="Container security tests", prompt="...", subagent_type="container-security-agent")
+Task(description="Authentication testing", prompt="...", subagent_type="auth-bypass-agent")
 Task(description="Dataflow mapping", prompt="...", subagent_type="dataflow-mapping-agent")
-Task(description="Cert analysis", prompt="...", subagent_type="certificate-agent")
-Task(description="Compliance", prompt="...", subagent_type="compliance-agent")
+Task(description="Certificate analysis", prompt="...", subagent_type="certificate-agent")
+Task(description="Compliance assessment", prompt="...", subagent_type="compliance-agent")
 ```
+
+**Phase 2 Parallel Execution:**
+```python
+# Launch Phase 2 agents after Phase 1 completes
+Task(description="Exploitation attempts", prompt="...", subagent_type="exploitation-agent")
+Task(description="Web app exploitation", prompt="...", subagent_type="webapp-exploit-agent")
+Task(description="Cloud pivot testing", prompt="...", subagent_type="cloud-pivot-agent")
+Task(description="Reverse tunnel tests", prompt="...", subagent_type="reverse-tunnel-agent")
+Task(description="Lateral movement", prompt="...", subagent_type="lateral-movement-agent")
+Task(description="Persistence analysis", prompt="...", subagent_type="persistence-agent")
+```
+
+**Phase 3 Execution:**
+```python
+# Launch Phase 3 after successful exploitation
+Task(description="Data exfiltration test", prompt="...", subagent_type="data-exfiltration-agent")
+Task(description="Evidence collection", prompt="...", subagent_type="evidence-collection-agent")
+```
+
+### Orchestration Patterns
+
+**Pattern 1: Full FedRAMP Assessment**
+1. Launch all Phase 1 agents in parallel
+2. Wait for results, synthesize findings
+3. Launch Phase 2 agents based on Phase 1 discoveries
+4. Wait for results, identify successful exploitation paths
+5. Launch Phase 3 agents for impact demonstration
+6. Launch report-generation-agent with all findings
+
+**Pattern 2: Targeted Vulnerability Assessment**
+1. Launch recon-agent for target enumeration
+2. Launch vuln-analysis-agent with recon results
+3. Launch exploitation-agent for verified vulnerabilities
+4. Launch evidence-collection-agent throughout
+
+**Pattern 3: Compliance-Focused Assessment**
+1. Launch compliance-agent for CIS/NIAP benchmarks
+2. Launch certificate-agent for crypto analysis
+3. Launch container-security-agent for TC-001 to TC-007
+4. Launch auth-bypass-agent for TC-008, TC-009
+5. Launch report-generation-agent with compliance focus
+
+**Pattern 4: Web Application Security Assessment**
+1. Launch recon-agent for web app enumeration (endpoints, parameters, technologies)
+2. Launch webapp-vuln-agent for comprehensive vulnerability analysis:
+   - Authentication flaws (session management, credential handling, MFA bypass)
+   - Authorization flaws (IDOR, privilege escalation, access control)
+   - Injection vulnerabilities (SQLi, command injection, SSTI, XSS)
+   - SSRF and request forgery issues
+3. Wait for vulnerability analysis report and exploitation queue
+4. Launch webapp-exploit-agent with the exploitation queue:
+   - Weaponize identified vulnerabilities
+   - Demonstrate proof-of-impact for each finding
+   - Document reproducible exploitation steps
+5. Launch evidence-collection-agent for artifact preservation
+6. Launch report-generation-agent with web app focus
 
 ### Agent Communication
 
@@ -177,6 +257,32 @@ Sub-agents communicate findings through structured output that feeds into:
 1. Other dependent agents for continued assessment
 2. Evidence collection agent for documentation
 3. Report generation agent for final deliverables
+
+## Mandatory Delegation Table
+
+When ANY of these tasks are requested, the orchestrator **MUST** invoke the corresponding sub-agent:
+
+| Task Category | Sub-Agent | subagent_type Value |
+|---------------|-----------|---------------------|
+| Reconnaissance, OSINT, enumeration | `recon-agent` | `"recon-agent"` |
+| Vulnerability scanning, CVE analysis | `vuln-analysis-agent` | `"vuln-analysis-agent"` |
+| Web app vulnerability analysis (auth, authz, injection, XSS, SSRF) | `webapp-vuln-agent` | `"webapp-vuln-agent"` |
+| Container security, Docker, escape testing | `container-security-agent` | `"container-security-agent"` |
+| Authentication testing, credentials | `auth-bypass-agent` | `"auth-bypass-agent"` |
+| Network traffic, dataflow analysis | `dataflow-mapping-agent` | `"dataflow-mapping-agent"` |
+| Exploit development, privilege escalation | `exploitation-agent` | `"exploitation-agent"` |
+| Web app exploitation (auth bypass, injection, XSS, SSRF attacks) | `webapp-exploit-agent` | `"webapp-exploit-agent"` |
+| Cloud backend access, AWS/Azure/GCP | `cloud-pivot-agent` | `"cloud-pivot-agent"` |
+| Tunneling, covert channels, C2 | `reverse-tunnel-agent` | `"reverse-tunnel-agent"` |
+| Lateral movement, pivoting | `lateral-movement-agent` | `"lateral-movement-agent"` |
+| Data exfiltration | `data-exfiltration-agent` | `"data-exfiltration-agent"` |
+| CIS/NIAP compliance | `compliance-agent` | `"compliance-agent"` |
+| Certificate/TLS analysis | `certificate-agent` | `"certificate-agent"` |
+| Persistence mechanisms | `persistence-agent` | `"persistence-agent"` |
+| Social engineering | `social-engineering-agent` | `"social-engineering-agent"` |
+| Evidence collection | `evidence-collection-agent` | `"evidence-collection-agent"` |
+| Tool management | `tools-arsenal-agent` | `"tools-arsenal-agent"` |
+| Report generation | `report-generation-agent` | `"report-generation-agent"` |
 
 ## Agent Configuration
 
@@ -197,12 +303,38 @@ All agent definition files are located in:
 
 Primary agent configuration:
 ```
-/home/ap/.config/opencode/armis-purple.md
+/home/ap/.config/opencode/armis-purple-latest.md
 /home/ap/.config/opencode/opencode.jsonc
 ```
+
+## Complete Agent File Listing
+
+| Agent File | Type | Phase |
+|------------|------|-------|
+| `recon-agent.md` | Reconnaissance | Phase 1 |
+| `vuln-analysis-agent.md` | Vulnerability Analysis | Phase 1 |
+| `webapp-vuln-agent.md` | Web App Vulnerability Analysis | Phase 1 |
+| `container-security-agent.md` | Container Security | Phase 1 |
+| `auth-bypass-agent.md` | Authentication Testing | Phase 1 |
+| `dataflow-mapping-agent.md` | Dataflow Mapping | Phase 1 |
+| `certificate-agent.md` | Certificate Analysis | Phase 1 |
+| `compliance-agent.md` | Compliance Assessment | Phase 1 |
+| `exploitation-agent.md` | Exploitation | Phase 2 |
+| `webapp-exploit-agent.md` | Web App Exploitation | Phase 2 |
+| `cloud-pivot-agent.md` | Cloud Pivot | Phase 2 |
+| `reverse-tunnel-agent.md` | Reverse Tunneling | Phase 2 |
+| `lateral-movement-agent.md` | Lateral Movement | Phase 2 |
+| `persistence-agent.md` | Persistence Analysis | Phase 2 |
+| `data-exfiltration-agent.md` | Data Exfiltration | Phase 3 |
+| `evidence-collection-agent.md` | Evidence Collection | Support |
+| `tools-arsenal-agent.md` | Tools Management | Support |
+| `social-engineering-agent.md` | Social Engineering | Support |
+| `report-generation-agent.md` | Report Generation | Support |
 
 ## Version Information
 
 - **Created**: December 2024
+- **Last Updated**: December 2024
 - **FedRAMP Test Plan Version**: 2025
 - **Assessment Period**: November 2025 - January 2026
+- **Total Agents**: 19 specialized sub-agents + 1 orchestrator
