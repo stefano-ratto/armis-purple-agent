@@ -2,6 +2,60 @@
 
 > **Complete listing of all Armis Purple sub-agents for the FedRAMP 2025 Red Team Exercise**
 
+---
+
+## oh-my-opencode Design Patterns Integration
+
+All agents in this framework have been updated to follow the **oh-my-opencode design patterns** for optimal performance and consistency:
+
+### Core Design Patterns
+
+| Pattern | Description | Applied To |
+|---------|-------------|------------|
+| **EXECUTION DISCIPLINE** | Mandatory execution protocols with numbered rules | All sub-agents |
+| **NO PREAMBLE** | Start with action, not explanation | All agents |
+| **PARALLEL FIRST** | Launch independent operations simultaneously | Orchestrator + sub-agents |
+| **EVIDENCE ALWAYS** | No finding without proof | All security agents |
+| **STRUCTURED OUTPUT** | Defined response formats | All agents |
+| **FAIL FAST** | 3-strike escalation protocol | All agents |
+
+### Response Format Standard
+
+All sub-agents use structured response formats:
+```
+[AGENT-TAG] {brief_action_description}
+
+{execution_details}
+
+[FINDINGS]
+{structured_findings}
+
+[EVIDENCE]
+{evidence_references}
+
+[NEXT]
+{recommended_next_steps}
+```
+
+### Failure Protocol (3-Strike Rule)
+
+All agents implement the standardized failure handling:
+- **Strike 1**: Retry with modified parameters
+- **Strike 2**: Try alternative tool/technique  
+- **Strike 3**: Report blocker to orchestrator with options
+
+### Prime Directives (Orchestrator)
+
+The primary orchestrator (`armis-purple-latest.md`) implements these mandatory protocols:
+
+1. **Long-Term Memory Protocol**: AGENTS.md file for session persistence
+2. **Context Window Management**: 150k token threshold with CONTEXT.md handoff
+3. **Intent Classification System**: Pre-action analysis for optimal routing
+4. **Communication Discipline**: Direct, action-oriented responses
+5. **7-Section Delegation Protocol**: Structured prompts for sub-agents
+
+---
+
 ## Agent Overview
 
 This directory contains all specialized sub-agents that support the Armis Purple primary agent in executing the FedRAMP Red Team Exercise Test Plan.
@@ -292,6 +346,12 @@ Each sub-agent is configured with:
 - **tools**: Specific tool access (bash, read, write, etc.)
 - **permission**: Permission levels for sensitive operations
 
+All agents implement:
+- **EXECUTION DISCIPLINE**: Mandatory execution protocol block
+- **RESPONSE FORMAT**: Standardized output structure
+- **FAILURE PROTOCOL**: 3-strike escalation pattern
+- **STRUCTURED OUTPUT**: JSON/Markdown templates for findings
+
 See `opencode.jsonc` for full configuration details.
 
 ## File Locations
@@ -331,6 +391,58 @@ Primary agent configuration:
 | `social-engineering-agent.md` | Social Engineering | Support |
 | `report-generation-agent.md` | Report Generation | Support |
 
+## Advanced Orchestration Features
+
+The primary orchestrator includes these advanced capabilities:
+
+### Smart Routing Engine
+Automatically routes requests to optimal sub-agents based on keyword patterns and context analysis.
+
+### Prompt Templates Library
+Pre-built optimized prompts for each sub-agent type:
+- `RECON-FULL`, `RECON-WEB`, `RECON-NETWORK`
+- `VULN-COMPREHENSIVE`, `VULN-CVE-SPECIFIC`
+- `WEBAPP-FULL-AUDIT`, `WEBAPP-AUTH-FOCUS`
+- `EXPLOIT-VERIFIED-VULNS`, `EXPLOIT-PRIVESC`
+- `CONTAINER-FULL-ASSESSMENT`
+- `COMPLIANCE-CIS`
+- `REPORT-EXECUTIVE`, `REPORT-TECHNICAL`
+
+### Workflow Automation
+Predefined workflow chains for common assessment patterns:
+- `FULL-PENTEST-CHAIN`: Complete penetration test workflow
+- `WEB-APP-ASSESSMENT`: Focused web application security assessment
+- `QUICK-VULN-SCAN`: Rapid vulnerability identification
+- `CONTAINER-SECURITY`: Container and Kubernetes security assessment
+
+### Result Synthesis Templates
+Structured formats for combining multi-agent outputs:
+- Phase Completion Summary
+- Vulnerability Consolidation
+- Attack Path Analysis
+- Final Assessment Summary
+
+### Fallback Logic
+Alternative agent selection when primary choice is unavailable, with graceful degradation modes.
+
+---
+
+## 7-Section Delegation Protocol
+
+When the orchestrator delegates to sub-agents, prompts MUST include:
+
+| Section | Purpose |
+|---------|---------|
+| **CONTEXT** | Background and current state |
+| **OBJECTIVE** | Clear, specific goal |
+| **TARGET** | What to test/analyze |
+| **SCOPE** | Boundaries and constraints |
+| **METHOD** | Approach and techniques to use |
+| **OUTPUT** | Required deliverables format |
+| **EVIDENCE** | What proof to capture |
+
+---
+
 ## Version Information
 
 - **Created**: December 2024
@@ -338,3 +450,4 @@ Primary agent configuration:
 - **FedRAMP Test Plan Version**: 2025
 - **Assessment Period**: November 2025 - January 2026
 - **Total Agents**: 19 specialized sub-agents + 1 orchestrator
+- **Design Pattern**: oh-my-opencode integrated
