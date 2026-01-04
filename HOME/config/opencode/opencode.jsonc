@@ -17,9 +17,6 @@
       "mode": "primary",
       "prompt": "{file:./armis-purple-latest.md}",
       "temperature": 0.3,
-      "tools": {
-        "*": true
-      },
       "permission": {
         "edit": "allow",
         "bash": "allow",
@@ -35,19 +32,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/recon-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -56,19 +44,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/vuln-analysis-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -77,21 +56,11 @@
       "mode": "subagent",
       "prompt": "{file:./agent/webapp-vuln-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 75,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true,
-        "task": true
-      },
+      "steps": 75,
       "permission": {
         "bash": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "edit": "deny"
       }
     },
 
@@ -100,18 +69,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/container-security-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -120,18 +81,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/auth-bypass-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -140,18 +93,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/dataflow-mapping-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -160,18 +105,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/certificate-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 30,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 30,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -180,16 +117,7 @@
       "mode": "subagent",
       "prompt": "{file:./agent/compliance-agent.md}",
       "temperature": 0.1,
-      "maxSteps": 100,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 100,
       "permission": {
         "bash": "allow",
         "edit": "deny"
@@ -204,18 +132,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/exploitation-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 50,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "allow"
       }
     },
 
@@ -224,21 +144,11 @@
       "mode": "subagent",
       "prompt": "{file:./agent/webapp-exploit-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 75,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true,
-        "task": true
-      },
+      "steps": 75,
       "permission": {
         "bash": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "edit": "allow"
       }
     },
 
@@ -247,20 +157,11 @@
       "mode": "subagent",
       "prompt": "{file:./agent/cloud-pivot-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true
-      },
+      "steps": 50,
       "permission": {
         "bash": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "edit": "deny"
       }
     },
 
@@ -269,18 +170,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/reverse-tunnel-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 40,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 40,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -289,18 +182,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/lateral-movement-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 50,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -309,18 +194,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/persistence-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 40,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 40,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -332,18 +209,10 @@
       "mode": "subagent",
       "prompt": "{file:./agent/data-exfiltration-agent.md}",
       "temperature": 0.3,
-      "maxSteps": 40,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 40,
       "permission": {
-        "bash": "allow"
+        "bash": "allow",
+        "edit": "deny"
       }
     },
 
@@ -355,20 +224,11 @@
       "mode": "subagent",
       "prompt": "{file:./agent/social-engineering-agent.md}",
       "temperature": 0.4,
-      "maxSteps": 30,
-      "tools": {
-        "write": true,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true
-      },
+      "steps": 30,
       "permission": {
         "bash": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "edit": "deny"
       }
     },
 
@@ -377,16 +237,7 @@
       "mode": "subagent",
       "prompt": "{file:./agent/evidence-collection-agent.md}",
       "temperature": 0.1,
-      "maxSteps": 50,
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 50,
       "permission": {
         "bash": "allow",
         "edit": "allow"
@@ -398,20 +249,11 @@
       "mode": "subagent",
       "prompt": "{file:./agent/tools-arsenal-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 40,
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true,
-        "webfetch": true
-      },
+      "steps": 40,
       "permission": {
         "bash": "allow",
-        "webfetch": "allow"
+        "webfetch": "allow",
+        "edit": "deny"
       }
     },
 
@@ -420,16 +262,7 @@
       "mode": "subagent",
       "prompt": "{file:./agent/report-generation-agent.md}",
       "temperature": 0.2,
-      "maxSteps": 100,
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "grep": true,
-        "list": true
-      },
+      "steps": 100,
       "permission": {
         "bash": "allow",
         "edit": "allow"
