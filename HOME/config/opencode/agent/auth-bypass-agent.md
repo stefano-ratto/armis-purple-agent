@@ -1,16 +1,8 @@
 ---
 description: Authentication testing, credential attacks, account mapping, and access control bypass (TC-008, TC-009)
 mode: subagent
-temperature: 0.2
-maxSteps: 50
-tools:
-  write: false
-  edit: false
-  bash: true
-  read: true
-  glob: true
-  grep: true
-  list: true
+temperature: 0.3
+steps: 50
 permission:
   bash: allow
   edit: deny

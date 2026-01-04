@@ -2,16 +2,7 @@
 description: Vulnerability scanning, CVE analysis, misconfiguration detection, and security weakness identification
 mode: subagent
 temperature: 0.2
-maxSteps: 50
-tools:
-  write: false
-  edit: false
-  bash: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  webfetch: true
+steps: 50
 permission:
   bash: allow
   edit: deny

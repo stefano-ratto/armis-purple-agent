@@ -2,15 +2,7 @@
 description: Report generation, finding documentation, executive summaries, and FedRAMP deliverables
 mode: subagent
 temperature: 0.2
-maxSteps: 100
-tools:
-  write: true
-  edit: true
-  bash: true
-  read: true
-  glob: true
-  grep: true
-  list: true
+steps: 100
 permission:
   bash: allow
   edit: allow

@@ -2,15 +2,7 @@
 description: Network traffic analysis, dataflow mapping, protocol analysis, and communication path documentation
 mode: subagent
 temperature: 0.2
-maxSteps: 50
-tools:
-  write: false
-  edit: false
-  bash: true
-  read: true
-  glob: true
-  grep: true
-  list: true
+steps: 50
 permission:
   bash: allow
   edit: deny

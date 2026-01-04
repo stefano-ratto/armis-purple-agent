@@ -2,16 +2,7 @@
 description: Security tools management, deployment guidance, and tool configuration support
 mode: subagent
 temperature: 0.2
-maxSteps: 40
-tools:
-  write: false
-  edit: false
-  bash: true
-  read: true
-  glob: true
-  grep: true
-  list: true
-  webfetch: true
+steps: 40
 permission:
   bash: allow
   webfetch: allow
